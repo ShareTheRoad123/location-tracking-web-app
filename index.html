@@ -98,6 +98,24 @@
             // Update latitude and longitude on the page
             document.getElementById('latitude').textContent = lat.toFixed(6);
             document.getElementById('longitude').textContent = lon.toFixed(6);
+        
+            // call API
+            sendLocationToServer(lat, lon);
+        }
+
+        function sendLocationToServer(lat, lon) {
+            const apiURL = 'https://sharetheroadmvp.onrender.com/location';
+
+            fetch(apiURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({latitude: lat, longitude: lon}),
+            })
+            .then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch(error => console.error('Error:', error));
         }
 
         function startTracking() {

@@ -76,6 +76,11 @@
         <h2>Location Info</h2>
         <p>Latitude: <span id="latitude">--</span></p>
         <p>Longitude: <span id="longitude">--</span></p>
+        <label for="role">I am a:</label>
+        <select id="role">
+            <option value="driver">Driver</option>
+            <option value="motorcyclist">Motorcyclist</option>
+        </select>
     </div>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -121,13 +126,14 @@
 
         function sendLocationToServer(lat, lon) {
             const apiURL = 'https://sharetheroadmvp.onrender.com/location';
+            const role = document.getElementById('role').value;
 
             fetch(apiURL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({userID: userID, latitude: lat, longitude: lon}),
+                body: JSON.stringify({userID: userID, latitude: lat, longitude: lon, role: role}),
             })
             .then(response => response.json())
             .then(data => console.log('Success:', data))

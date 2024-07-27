@@ -103,6 +103,22 @@
             sendLocationToServer(lat, lon);
         }
 
+        function generateUUID() {
+            return crypto.randomUUID(); // Modern browsers support this
+        }
+
+        function getOrCreateUserID() {
+            let userID = localStorage.getItem('userID');
+            if (!userID) {
+                userID = generateUUID();
+                localStorage.setItem('userID', userID);
+            }
+            return userID;
+        }
+
+        // Display the user ID on the page
+        const userID = getOrCreateUserID();
+
         function sendLocationToServer(lat, lon) {
             const apiURL = 'https://sharetheroadmvp.onrender.com/location';
 
@@ -111,7 +127,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({latitude: lat, longitude: lon}),
+                body: JSON.stringify({userID: userID, latitude: lat, longitude: lon}),
             })
             .then(response => response.json())
             .then(data => console.log('Success:', data))

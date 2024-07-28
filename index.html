@@ -152,8 +152,25 @@
                 body: JSON.stringify({userID: userID, latitude: lat, longitude: lon, role: role}),
             })
             .then(response => response.json())
-            .then(data => console.log('Success:', data))
+            .then(data => {
+                console.log('Success:', data);
+                if (data.should_alert) {
+                    playAlert();
+                }
+            })
             .catch(error => console.error('Error:', error));
+        }
+
+        function playAlert() {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance('Motorcycle Nearby');
+                utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English'); // Optional: choose a voice
+                utterance.pitch = 1; // Default pitch
+                utterance.rate = 1;  // Default rate
+                speechSynthesis.speak(utterance);
+            } else {
+                console.log('Text-to-Speech not supported in this browser.');
+            }
         }
 
         function startTracking() {

@@ -102,6 +102,7 @@
         setInitialRole();
 
         function playAlert() {
+            alert('Motorcycle Nearby');
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance('Motorcycle Nearby');
                 utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English'); // Optional: choose a voice

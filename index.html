@@ -100,6 +100,18 @@
 
         // Call this function on page load
         setInitialRole();
+
+        function playAlert() {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance('Motorcycle Nearby');
+                utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English'); // Optional: choose a voice
+                utterance.pitch = 1; // Default pitch
+                utterance.rate = 1;  // Default rate
+                speechSynthesis.speak(utterance);
+            } else {
+                console.log('Text-to-Speech not supported in this browser.');
+            }
+        }
         
         // Initialize the map with a closer zoom level
         const map = L.map('map').setView([51.505, -0.09], 18); // Zoom level increased from 15 to 18
@@ -159,18 +171,6 @@
                 }
             })
             .catch(error => console.error('Error:', error));
-        }
-
-        function playAlert() {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance('Motorcycle Nearby');
-                utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English'); // Optional: choose a voice
-                utterance.pitch = 1; // Default pitch
-                utterance.rate = 1;  // Default rate
-                speechSynthesis.speak(utterance);
-            } else {
-                console.log('Text-to-Speech not supported in this browser.');
-            }
         }
 
         function startTracking() {

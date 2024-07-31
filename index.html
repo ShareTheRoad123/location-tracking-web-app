@@ -102,7 +102,7 @@
         setInitialRole();
 
         function playAlert() {
-            alert('Motorcycle Nearby');
+            // alert('Motorcycle Nearby');
             console.log("speechSynthesis in window", 'speechSynthesis' in window);
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance('Motorcycle Nearby');
@@ -169,9 +169,9 @@
             .then(data => {
                 console.log('Success:', data);
                 console.log('Data.should_alert: ', data.should_alert)
-                // if (data.should_alert) {
+                if (data.should_alert) {
                     playAlert();
-                // }
+                }
             })
             .catch(error => console.error('Error:', error));
         }

@@ -105,9 +105,9 @@
             alert('Motorcycle Nearby');
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance('Motorcycle Nearby');
-                utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English'); // Optional: choose a voice
-                utterance.pitch = 1; // Default pitch
-                utterance.rate = 1;  // Default rate
+                // utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English'); // Optional: choose a voice
+                // utterance.pitch = 1; // Default pitch
+                // utterance.rate = 1;  // Default rate
                 speechSynthesis.speak(utterance);
             } else {
                 console.log('Text-to-Speech not supported in this browser.');

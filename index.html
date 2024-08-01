@@ -101,10 +101,21 @@
         // Call this function on page load
         setInitialRole();
 
+        let canPlay = true;
+
         function playAlert() {
             // alert('Motorcycle Nearby');
+            if (!canPlay) return;
+
+            canPlay = false;
+            setTimeout(() => canPlay = true, 1000); // Throttle duration
+
             console.log("speechSynthesis in window", 'speechSynthesis' in window);
             if ('speechSynthesis' in window) {
+                // Cancel any ongoing utterance
+                if (speechSynthesis.speaking) {
+                    speechSynthesis.cancel();
+                }
                 const utterance = new SpeechSynthesisUtterance('Motorcycle Nearby');
                 // utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English'); // Optional: choose a voice
                 utterance.pitch = 1; // Default pitch

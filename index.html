@@ -226,13 +226,19 @@
         // WebSocket connection
         const socket = io('https://sharetheroadmvp.onrender.com'); // Adjust the URL if needed
 
-        socket.on('notification', (data) => {
+        socket.on('notification', async (data) => {
             console.log('Notification received:', data.message);
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(data.message);
                 utterance.pitch = 1; // Default pitch
                 utterance.rate = 1;  // Default rate
-                speechSynthesis.speak(utterance);
+                
+                // Use a promise to handle speech synthesis
+                await new Promise((resolve, reject) => {
+                    utterance.onend = resolve;
+                    utterance.onerror = reject;
+                    speechSynthesis.speak(utterance);
+                });
             } else {
                 console.log('Speech synthesis not supported.');
             }

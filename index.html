@@ -210,7 +210,7 @@
         startTracking();
 
         // WebSocket connection
-        const socket = io('http://localhost:8000'); // Adjust the URL if needed
+        const socket = io('https://sharetheroadmvp.onrender.com'); // Adjust the URL if needed
 
         socket.on('notification', (data) => {
             console.log('Notification received:', data.message);

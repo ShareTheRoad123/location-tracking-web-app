@@ -81,6 +81,7 @@
             <option value="driver">Driver</option>
             <option value="motorcyclist">Motorcyclist</option>
         </select>
+        <button id="speak-button" onclick="runSpeechSynthesis()">Speak Alert</button>
     </div>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -123,6 +124,18 @@
                 speechSynthesis.speak(utterance);
             } else {
                 console.log('Text-to-Speech not supported in this browser.');
+            }
+        }
+
+        function runSpeechSynthesis() {
+            const message = 'Motorcycle Nearby'; // Replace with dynamic message if needed
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(message);
+                utterance.pitch = 1; // Default pitch
+                utterance.rate = 1;  // Default rate
+                speechSynthesis.speak(utterance);
+            } else {
+                console.log('Speech synthesis not supported.');
             }
         }
         

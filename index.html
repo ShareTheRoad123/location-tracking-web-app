@@ -182,14 +182,19 @@
             const apiURL = 'https://sharetheroadmvp.onrender.com/location';
             const role = document.getElementById('role').value;
 
-            fetch(apiURL, {
+            return fetch(apiURL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({userID: userID, latitude: lat, longitude: lon, role: role}),
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('Success:', data);
             })

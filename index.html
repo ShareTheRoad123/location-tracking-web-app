@@ -190,25 +190,31 @@
         // WebSocket connection
         const socket = io('https://sharetheroadmvp.onrender.com'); // Adjust the URL if needed
 
+        let lastNotificationTime = 0;
+        const notificationInterval = 60000; // 1 minute in milliseconds
+
         socket.on('notification', async (data) => {
-            console.log('Notification received:', data.message);
-            if ('speechSynthesis' in window) {
-                if (speechSynthesis.speaking) {
-                    speechSynthesis.cancel(); // Cancel any ongoing speech
+            const currentTime = Date.now();
+
+            // Check if enough time has passed since the last notification
+            if (currentTime - lastNotificationTime >= notificationInterval) {
+                lastNotificationTime = currentTime; // Update the timestamp of the last notification
+                console.log('Notification received:', data.message);
+                if ('speechSynthesis' in window) {
+                    
+                    const utterance = new SpeechSynthesisUtterance(data.message);
+                    utterance.pitch = 1; // Default pitch
+                    utterance.rate = 1;  // Default rate
+                    
+                    // Use a promise to handle speech synthesis
+                    await new Promise((resolve, reject) => {
+                        utterance.onend = resolve;
+                        utterance.onerror = reject;
+                        speechSynthesis.speak(utterance);
+                    });
+                } else {
+                    console.log('Speech synthesis not supported.');
                 }
-                
-                const utterance = new SpeechSynthesisUtterance(data.message);
-                utterance.pitch = 1; // Default pitch
-                utterance.rate = 1;  // Default rate
-                
-                // Use a promise to handle speech synthesis
-                await new Promise((resolve, reject) => {
-                    utterance.onend = resolve;
-                    utterance.onerror = reject;
-                    speechSynthesis.speak(utterance);
-                });
-            } else {
-                console.log('Speech synthesis not supported.');
             }
         });
 

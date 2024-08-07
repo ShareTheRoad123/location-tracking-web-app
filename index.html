@@ -84,6 +84,7 @@
     </div>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script> <!-- Add Socket.IO client library -->
     <script>
         function updateRole() {
             const role = document.getElementById('role').value;
@@ -104,7 +105,6 @@
         let canPlay = true;
 
         function playAlert() {
-            // alert('Motorcycle Nearby');
             if (!canPlay) return;
 
             canPlay = false;
@@ -208,6 +208,30 @@
 
         // Start tracking when the page loads
         startTracking();
+
+        // WebSocket connection
+        const socket = io('http://localhost:8000'); // Adjust the URL if needed
+
+        socket.on('notification', (data) => {
+            console.log('Notification received:', data.message);
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(data.message);
+                utterance.pitch = 1; // Default pitch
+                utterance.rate = 1;  // Default rate
+                speechSynthesis.speak(utterance);
+            } else {
+                console.log('Speech synthesis not supported.');
+            }
+        });
+
+        socket.on('connect', () => {
+            console.log('Connected to WebSocket server');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from WebSocket server');
+        });
+
     </script>
 </body>
 </html>

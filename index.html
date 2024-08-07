@@ -103,42 +103,6 @@
         // Call this function on page load
         setInitialRole();
 
-        let canPlay = true;
-
-        function playAlert() {
-            if (!canPlay) return;
-
-            canPlay = false;
-            setTimeout(() => canPlay = true, 1000); // Throttle duration
-
-            console.log("speechSynthesis in window", 'speechSynthesis' in window);
-            if ('speechSynthesis' in window) {
-                // Cancel any ongoing utterance
-                if (speechSynthesis.speaking) {
-                    speechSynthesis.cancel();
-                }
-                const utterance = new SpeechSynthesisUtterance('Motorcycle Nearby');
-                // utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English'); // Optional: choose a voice
-                utterance.pitch = 1; // Default pitch
-                utterance.rate = 1;  // Default rate
-                speechSynthesis.speak(utterance);
-            } else {
-                console.log('Text-to-Speech not supported in this browser.');
-            }
-        }
-
-        function runSpeechSynthesis() {
-            const message = 'Motorcycle Nearby'; // Replace with dynamic message if needed
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(message);
-                utterance.pitch = 1; // Default pitch
-                utterance.rate = 1;  // Default rate
-                speechSynthesis.speak(utterance);
-            } else {
-                console.log('Speech synthesis not supported.');
-            }
-        }
-        
         // Initialize the map with a closer zoom level
         const map = L.map('map').setView([51.505, -0.09], 18); // Zoom level increased from 15 to 18
 
@@ -229,6 +193,10 @@
         socket.on('notification', async (data) => {
             console.log('Notification received:', data.message);
             if ('speechSynthesis' in window) {
+                if (speechSynthesis.speaking) {
+                    speechSynthesis.cancel(); // Cancel any ongoing speech
+                }
+                
                 const utterance = new SpeechSynthesisUtterance(data.message);
                 utterance.pitch = 1; // Default pitch
                 utterance.rate = 1;  // Default rate

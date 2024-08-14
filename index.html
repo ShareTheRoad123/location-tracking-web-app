@@ -9,7 +9,7 @@
         /* General body styles */
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
+            margin: 0;f
             padding: 0;
         }
 
@@ -81,14 +81,14 @@
             <option value="driver">Driver</option>
             <option value="motorcyclist">Motorcyclist</option>
         </select>
-        <button onclick="startTracking()">Start Tracking</button>
+        <button onclick="initializeUserInteraction()">Start Tracking</button>
         <!-- <button id="speak-button" onclick="runSpeechSynthesis()">Speak Alert</button> -->
     </div>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script> <!-- Add Socket.IO client library -->
     <script>
-        function startTracking() {
+        function initializeUserInteraction() {
             // User interaction has occurred, speech synthesis can now be used
             console.log('User interaction has occurred');
         }

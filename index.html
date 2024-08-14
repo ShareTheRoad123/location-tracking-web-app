@@ -212,6 +212,8 @@
                     audio.play().catch(error => {
                         console.error('Error playing audio:', error);
                     });
+                } else {
+                    console.log('Current user is not a driver.')
                 }
             }
         });

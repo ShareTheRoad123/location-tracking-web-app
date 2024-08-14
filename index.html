@@ -207,10 +207,12 @@
                 lastNotificationTime = currentTime; // Update the timestamp of the last notification
                 console.log('Notification received:', data.message);
                 // Create an Audio object and play the audio file
-                const audio = new Audio('motorcycle.mp3');
-                audio.play().catch(error => {
-                    console.error('Error playing audio:', error);
-                });
+                if (data.userID === userID) {
+                    const audio = new Audio('motorcycle.mp3');
+                    audio.play().catch(error => {
+                        console.error('Error playing audio:', error);
+                    });
+                }
             }
         });
 

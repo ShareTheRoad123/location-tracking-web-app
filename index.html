@@ -81,16 +81,16 @@
             <option value="driver">Driver</option>
             <option value="motorcyclist">Motorcyclist</option>
         </select>
-        <button onclick="initializeSpeech()">Start Speech</button>
+        <button onclick="startTracking()">Start Tracking</button>
         <!-- <button id="speak-button" onclick="runSpeechSynthesis()">Speak Alert</button> -->
     </div>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script> <!-- Add Socket.IO client library -->
     <script>
-        function initializeSpeech() {
+        function startTracking() {
             // User interaction has occurred, speech synthesis can now be used
-            console.log('Speech synthesis initialized');
+            console.log('User interaction has occurred');
         }
 
         function updateRole() {

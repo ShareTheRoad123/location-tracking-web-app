@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continuous Location Tracking</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* General body styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Map container */
+        #map {
+            flex: 1;
+            height: calc(100vh - 80px); /* Full height minus header height */
+            width: 100%;
+        }
+
+        /* Location info container */
+        #location-info {
+            padding: 15px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000; /* Ensure it stays on top of the map */
+        }
+
+        /* Text styling for location information */
+        #location-info h2 {
+            font-size: 24px; /* Larger font size for the header */
+            margin: 0;
+            color: #333;
+        }
+
+        #location-info p {
+            font-size: 18px; /* Larger font size for latitude and longitude */
+            margin: 5px 0;
+            color: #666;
+        }
+
+        /* Button styling */
+        #location-info button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            color: #fff;
+            background-color: #007bff;
+            margin-top: 10px;
+        }
+
+        #location-info button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive layout adjustments */
+        @media (max-width: 768px) {
+            #location-info h2 {
+                font-size: 20px; /* Slightly smaller header on mobile */
+            }
+
+            #location-info p {
+                font-size: 16px; /* Slightly smaller text on mobile */
+            }
+        }
+
+        @media (max-width: 480px) {
+            #location-info h2 {
+                font-size: 18px; /* Even smaller header on very small screens */
+            }
+
+            #location-info p {
+                font-size: 14px; /* Even smaller text on very small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="location-info">
+        <h2>Share The Road</h2>
+        <p>Latitude: <span id="latitude">--</span></p>
+        <p>Longitude: <span id="longitude">--</span></p>
+        <button onclick="initializeUserInteraction()">Start Tracking</button>
+    </div>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        function initializeUserInteraction() {
+            console.log('User interaction has occurred');
+        }
+
+        function setInitialRole() {
+            // Set the role from localStorage if available
+            const storedRole = localStorage.getItem('role');
+            if (storedRole) {
+                console.log('Role set from storage:', storedRole);
+            }
+        }
+
+        // Call this function on page load
+        setInitialRole();
+
+        // Initialize the map with a closer zoom level
+        const map = L.map('map').setView([51.505, -0.09], 18); // Zoom level increased from 15 to 18
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Initialize a marker to represent the user's location
+        let userMarker = L.marker([51.505, -0.09]).addTo(map);
+
+        function updateLocation(lat, lon) {
+            // Update marker position
+            userMarker.setLatLng([lat, lon]);
+            map.setView([lat, lon], 18); // Set zoom level when updating location
+
+            // Update latitude and longitude on the page
+            document.getElementById('latitude').textContent = lat.toFixed(6);
+            document.getElementById('longitude').textContent = lon.toFixed(6);
+        
+            // Call API
+            sendLocationToServer(lat, lon);
+        }
+
+        function generateUUID() {
+            return crypto.randomUUID(); // Modern browsers support this
+        }
+
+        function getOrCreateUserID() {
+            let userID = localStorage.getItem('userID');
+            if (!userID) {
+                userID = generateUUID();
+                localStorage.setItem('userID', userID);
+            }
+            return userID;
+        }
+
+        // Display the user ID on the page
+        const userID = getOrCreateUserID();
+
+        function sendLocationToServer(lat, lon) {
+            const apiURL = 'https://sharetheroadmvp.onrender.com/location';
+            const role = localStorage.getItem('role');
+
+            return fetch(apiURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({userID: userID, latitude: lat, longitude: lon, role: role}),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function startTracking() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    // Update location and map
+                    updateLocation(lat, lon);
+                    
+                }, error => console.error('Error getting location:', error), {
+                    enableHighAccuracy: true, // Use high accuracy if available
+                    timeout: 10000, // Timeout after 10 seconds
+                    maximumAge: 0 // Ensure fresh location
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Start tracking when the page loads
+        startTracking();
+
+        // WebSocket connection
+        const socket = io('https://sharetheroadmvp.onrender.com'); // Adjust the URL if needed
+
+        let lastNotificationTime = 0;
+        const notificationInterval = 60000; // 1 minute in milliseconds
+
+        socket.on('notification', async (data) => {
+            const currentTime = Date.now();
+
+            // Check if enough time has passed since the last notification
+            if (currentTime - lastNotificationTime >= notificationInterval) {
+                lastNotificationTime = currentTime; // Update the timestamp of the last notification
+                console.log('Notification received:', data.message);
+                // Create an Audio object and play the audio file
+                console.log('Current user ID:', userID);
+                console.log('User ID who should be notified:', data.userID);
+                if (data.userID === userID) {
+                    const audio = new Audio('motorcycle.mp3');
+                    audio.play().catch(error => {
+                        console.error('Error playing audio:', error);
+                    });
+                } else {
+                    console.log('Current user is not a driver.')
+                }
+            }
+        });
+
+        socket.on('connect', () => {
+            console.log('Connected to WebSocket server');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from WebSocket server');
+        });
+
+    </script>
+</body>
+</html>

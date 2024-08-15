@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Role - Share The Road</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .motorcyclist-button {
+            background-color: #28a745;
+        }
+        .motorcyclist-button:hover {
+            background-color: #218838;
+        }
+        .driver-button {
+            background-color: #007bff;
+        }
+        .driver-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Your Role</h1>
+        <button class="motorcyclist-button" onclick="selectRole('motorcyclist')">I'm a Motorcyclist</button>
+        <button class="driver-button" onclick="selectRole('driver')">I'm a Driver</button>
+    </div>
+
+    <script>
+        function selectRole(role) {
+            // Save user role in the session/local storage or send to backend
+            localStorage.setItem('userRole', role);
+            if (role === 'motorcyclist') {
+                window.location.href = 'https://buy.stripe.com/test_fZe5l959D3aB85WcMM';
+            } else {
+                window.location.href = 'home.html';
+            }
+        }
+    </script>
+</body>
+</html>

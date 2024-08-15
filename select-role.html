@@ -66,11 +66,12 @@
         function selectRole(role) {
             // Save user role in the session/local storage or send to backend
             localStorage.setItem('role', role);
-            if (role === 'motorcyclist') {
-                window.location.href = 'https://buy.stripe.com/test_fZe5l959D3aB85WcMM';
-            } else {
-                window.location.href = 'home.html';
-            }
+            window.location.href = 'home.html'
+            // if (role === 'motorcyclist') {
+            //     window.location.href = 'https://buy.stripe.com/test_fZe5l959D3aB85WcMM';
+            // } else {
+            //     window.location.href = 'home.html';
+            // }
         }
     </script>
 </body>

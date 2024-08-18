@@ -206,12 +206,12 @@
         let lastNotificationTime = 0;
         const notificationInterval = 10000; // 10 seconds in milliseconds
 
-        socket.on('notification', async (data) => {
+        socket.on('notification', (data, callback) => {
             const currentTime = Date.now();
 
             // Check if enough time has passed since the last notification
-            // if (currentTime - lastNotificationTime >= notificationInterval) {
-                // lastNotificationTime = currentTime; // Update the timestamp of the last notification
+            if (currentTime - lastNotificationTime >= notificationInterval) {
+                lastNotificationTime = currentTime; // Update the timestamp of the last notification
                 console.log('Notification received:', data.message);
                 // Create an Audio object and play the audio file
                 console.log('Current user ID:', userID);
@@ -224,7 +224,12 @@
                 } else {
                     console.log('Current user is not a driver.')
                 }
-            // }
+            }
+
+            // Send acknowledgment back to the server
+            if (callback) {
+                callback({status: 'received', timestamp: new Date()});
+            }
         });
 
         socket.on('connect', () => {

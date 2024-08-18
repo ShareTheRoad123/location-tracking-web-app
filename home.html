@@ -197,10 +197,14 @@
         startTracking();
 
         // WebSocket connection
-        const socket = io('https://sharetheroadmvp.onrender.com'); // Adjust the URL if needed
+        const socket = io('https://sharetheroadmvp.onrender.com', {
+            query: {
+                userID: userID
+            }
+        });
 
         let lastNotificationTime = 0;
-        const notificationInterval = 60000; // 1 minute in milliseconds
+        const notificationInterval = 10000; // 10 seconds in milliseconds
 
         socket.on('notification', async (data) => {
             const currentTime = Date.now();

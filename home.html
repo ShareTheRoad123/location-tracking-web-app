@@ -92,6 +92,7 @@
         <p>Latitude: <span id="latitude">--</span></p>
         <p>Longitude: <span id="longitude">--</span></p>
         <button onclick="initializeUserInteraction()">Start Tracking</button>
+        <button id="notify-drivers-btn">Notify Drivers</button> <!-- Added Notify Drivers button -->
     </div>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -227,30 +228,21 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-        const storedRole = localStorage.getItem('role');
+            const storedRole = localStorage.getItem('role');
 
-        if (storedRole === 'motorcyclist') {
-            createPlayButton();
-        } else {
-            console.log('Button not rendered because user is not a motorcyclist.');
-        }
-    });
-
-    function createPlayButton() {
-        const playButton = document.createElement('button');
-        playButton.id = 'playButton';
-        playButton.textContent = 'Notify Drivers';
-        document.body.appendChild(playButton);
-
-        playButton.addEventListener('click', () => {
-            handlePlayButtonClick();
+            if (storedRole === 'motorcyclist') {
+                document.getElementById('notify-drivers-btn').addEventListener('click', () => {
+                    handlePlayButtonClick();
+                });
+            } else {
+                console.log('Notify Drivers button not rendered because user is not a motorcyclist.');
+            }
         });
-    }
 
-    function handlePlayButtonClick() {
-        // Emit an event to the server indicating the motorcyclist wants to notify drivers
-        socket.emit('motorcyclist_notify', { userID: userID });
-    }
+        function handlePlayButtonClick() {
+            // Emit an event to the server indicating the motorcyclist wants to notify drivers
+            socket.emit('motorcyclist_notify', { userID: userID });
+        }
 
         socket.on('connect', () => {
             console.log('Connected to WebSocket server');
@@ -259,7 +251,6 @@
         socket.on('disconnect', () => {
             console.log('Disconnected from WebSocket server');
         });
-
     </script>
 </body>
 </html>

@@ -91,7 +91,6 @@
         <h2>Share The Road</h2>
         <p>Latitude: <span id="latitude">--</span></p>
         <p>Longitude: <span id="longitude">--</span></p>
-        <button onclick="initializeUserInteraction()">Start Tracking</button>
         <!-- Notify Drivers button will be added conditionally -->
     </div>
     <div id="map"></div>
@@ -109,6 +108,8 @@
                 console.log('Role set from storage:', storedRole);
                 if (storedRole === 'motorcyclist') {
                     createPlayButton();
+                } else {
+                    createEnableAudioButton();
                 }
             }
         }
@@ -240,6 +241,17 @@
 
             playButton.addEventListener('click', () => {
                 handlePlayButtonClick();
+            });
+        }
+
+        function createEnableAudioButton() {
+            const enableAudioButton = document.createElement('button');
+            enableAudioButton.id = 'enable-audio-btn';
+            enableAudioButton.textContent = 'Enable Audio';
+            document.getElementById('location-info').appendChild(enableAudioButton);
+
+            enableAudioButton.addEventListener('click', () => {
+                initializeUserInteraction();
             });
         }
 

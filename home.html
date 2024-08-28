@@ -205,7 +205,6 @@
 
         let lastNotificationTime = 0;
         const notificationInterval = 10000; // 10 seconds in milliseconds
-        let notificationData = null;
 
         socket.on('notification', (data, callback) => {
             const currentTime = Date.now();
@@ -215,7 +214,11 @@
             console.log('Current user ID:', userID);
             console.log('User ID who should be notified:', data.userID);
 
-            notificationData = data;
+            const audio = new Audio('motorcycle.mp3');
+                audio.play().catch(error => {
+                    console.error('Error playing audio:', error);
+                });
+            
 
             // Send acknowledgment back to the server
             if (callback) {

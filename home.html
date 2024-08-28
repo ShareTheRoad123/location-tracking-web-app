@@ -92,7 +92,7 @@
         <p>Latitude: <span id="latitude">--</span></p>
         <p>Longitude: <span id="longitude">--</span></p>
         <button onclick="initializeUserInteraction()">Start Tracking</button>
-        <button id="notify-drivers-btn">Notify Drivers</button> <!-- Added Notify Drivers button -->
+        <!-- Notify Drivers button will be added conditionally -->
     </div>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -107,6 +107,9 @@
             const storedRole = localStorage.getItem('role');
             if (storedRole) {
                 console.log('Role set from storage:', storedRole);
+                if (storedRole === 'motorcyclist') {
+                    createPlayButton();
+                }
             }
         }
 
@@ -227,17 +230,16 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const storedRole = localStorage.getItem('role');
+        function createPlayButton() {
+            const playButton = document.createElement('button');
+            playButton.id = 'notify-drivers-btn';
+            playButton.textContent = 'Notify Drivers';
+            document.getElementById('location-info').appendChild(playButton);
 
-            if (storedRole === 'motorcyclist') {
-                document.getElementById('notify-drivers-btn').addEventListener('click', () => {
-                    handlePlayButtonClick();
-                });
-            } else {
-                console.log('Notify Drivers button not rendered because user is not a motorcyclist.');
-            }
-        });
+            playButton.addEventListener('click', () => {
+                handlePlayButtonClick();
+            });
+        }
 
         function handlePlayButtonClick() {
             // Emit an event to the server indicating the motorcyclist wants to notify drivers

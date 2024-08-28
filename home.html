@@ -116,6 +116,9 @@
         // Call this function on page load
         setInitialRole();
 
+        // Create the audio project
+        const audio = new Audio('motorcycle.mp3');
+
         // Initialize the map with a closer zoom level
         const map = L.map('map').setView([51.505, -0.09], 18); // Zoom level increased from 15 to 18
 
@@ -218,11 +221,10 @@
             console.log('Current user ID:', userID);
             console.log('User ID who should be notified:', data.userID);
 
-            const audio = new Audio('motorcycle.mp3');
-                audio.play().catch(error => {
-                    console.error('Error playing audio:', error);
-                });
-            
+            // Play the audio without creating a new Audio object each time
+            audio.play().catch(error => {
+                console.error('Error playing audio:', error);
+            });
 
             // Send acknowledgment back to the server
             if (callback) {

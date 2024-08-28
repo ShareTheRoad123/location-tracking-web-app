@@ -222,35 +222,32 @@
                 callback({status: 'received', timestamp: new Date()});
             }
         });
-        
 
-        // Add an event listener to the button that will play the audio
         document.addEventListener('DOMContentLoaded', () => {
         const storedRole = localStorage.getItem('role');
-        
-        // Check the user's role
-        if (storedRole === 'motorcyclist') {
-            // Create the button dynamically and add it to the page
-            const playButton = document.createElement('button');
-            playButton.id = 'playButton';
-            playButton.textContent = 'Play Notification';
-            document.body.appendChild(playButton);
 
-            // Add the event listener to the button
-            playButton.addEventListener('click', () => {
-                if (notificationData && notificationData.userID === userID) {
-                    const audio = new Audio('motorcycle.mp3');
-                    audio.play().catch(error => {
-                        console.error('Error playing audio:', error);
-                    });
-                } else {
-                    console.log('Current user is not a driver or no notification data available.');
-                }
-            });
+        if (storedRole === 'motorcyclist') {
+            createPlayButton();
         } else {
             console.log('Button not rendered because user is not a motorcyclist.');
         }
     });
+
+    function createPlayButton() {
+        const playButton = document.createElement('button');
+        playButton.id = 'playButton';
+        playButton.textContent = 'Notify Drivers';
+        document.body.appendChild(playButton);
+
+        playButton.addEventListener('click', () => {
+            handlePlayButtonClick();
+        });
+    }
+
+    function handlePlayButtonClick() {
+        // Emit an event to the server indicating the motorcyclist wants to notify drivers
+        socket.emit('motorcyclist_notify', { userID: userID });
+    }
 
         socket.on('connect', () => {
             console.log('Connected to WebSocket server');
